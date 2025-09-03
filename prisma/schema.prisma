@@ -37,6 +37,25 @@ model Produto {
   garantia     Int      // em meses
   complementares String
   aplicacao    String   // "Indoor Rental", "Outdoor Rental", "Indoor Fixo", "Outdoor Fixo"
+  tipo         String   // "Painel" ou "Controladora"
+  // Campos da ficha técnica
+  marca        String?
+  configuracao  String?  // ex: "1R1G1B"
+  cor          String?  // ex: "Preta"
+  driverIC     String?
+  taxaRefresh  String?  // ex: "1920Hz"
+  nivelCinza   String?  // ex: "14 bits"
+  anguloVisao String?  // ex: "140°"
+  temperatura  String?  // ex: "-20°C ~ 60°C"
+  umidade      String?  // ex: "10% ~ 90%"
+  tensao       String?  // ex: "AC 110V ~ 240V"
+  frequencia   String?  // ex: "50/60Hz"
+  potencia     String?  // ex: "Max 650W"
+  interface    String?  // ex: "Ethernet/HDMI"
+  controle     String?  // ex: "WiFi/APP"
+  pesoControladora Float? // em kg
+  dimensoesControladora String? // ex: "280x180x40mm"
+  
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -79,6 +98,7 @@ model Orcamento {
   valorTotal        Float
   valorComDesconto  Float // caso "Sem DIFAL"
   produtoId         String
+  garantia          Int      // em anos (1-5)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
