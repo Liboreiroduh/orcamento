@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Vendedor {
+  id        String   @id @default(cuid())
+  nome      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orcamentos Orcamento[]
+}
+
+model Produto {
+  id           String   @id @default(cuid())
+  modelo       String
+  linha        String   // "Rental" ou "Fixa"
+  pixelPitch   Float    // em mm
+  gabinete     String   // dimensões do gabinete
+  peso         Float    // em kg
+  consumo      Float    // em W
+  brilho       Float    // em nits
+  voltagem     String
+  vidaUtil     Int      // em horas
+  ipRating     String
+  garantia     Int      // em meses
+  complementares String
+  aplicacao    String   // "Indoor Rental", "Outdoor Rental", "Indoor Fixo", "Outdoor Fixo"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  precos Preco[]
+  orcamentos Orcamento[]
+}
+
+model Preco {
+  id         String   @id @default(cuid())
+  produtoId  String
+  valor      Float    // valor unitário do gabinete
+  acessorios Float    // valor dos acessórios
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  produto Produto @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+}
+
+model Orcamento {
+  id                String   @id @default(cuid())
+  numeroProposta    String   @unique // formato: AAAA + NNNN + MM
+  tributacao        String   // "Com DIFAL" ou "Sem DIFAL"
+  aplicacao         String   // "Indoor Rental", "Outdoor Rental", "Indoor Fixo", "Outdoor Fixo"
+  pixelPitch        Float    // em mm
+  vendedorId        String
+  nomeCliente       String?  // nome do cliente (opcional)
+  larguraNominal    Float    // em metros
+  alturaNominal     Float    // em metros
+  larguraGab        Int      // quantidade de gabinetes na largura
+  alturaGab         Int      // quantidade de gabinetes na altura
+  totalGabinetes    Int
+  larguraReal       Float    // em metros
+  alturaReal        Float    // em metros
+  resolucaoHorizontal Int    // em pixels
+  resolucaoVertical   Int    // em pixels
+  resolucaoVideoHorizontal Int // em pixels
+  resolucaoVideoVertical   Int // em pixels
+  valorUnitario     Float
+  valorAcessorios   Float
+  valorTotal        Float
+  valorComDesconto  Float // caso "Sem DIFAL"
+  produtoId         String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  vendedor Vendedor @relation(fields: [vendedorId], references: [id])
+  produto   Produto   @relation(fields: [produtoId], references: [id])
+}
